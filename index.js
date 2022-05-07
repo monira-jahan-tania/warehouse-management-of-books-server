@@ -43,7 +43,7 @@ async function run() {
         app.post('/login', async (req, res) => {
             const user = req.body;
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-                expiresIn: '1y'
+                expiresIn: '60d'
             });
             res.send({ accessToken });
         })
@@ -82,28 +82,22 @@ async function run() {
             res.send(item);
         });
 
-        // app.patch('item/:id', async (req, res) => {
-        //     const id = req.params.id;
-        //     const item = req.body;
-        //     console.log(quantity);
-        //     const query = { _id: ObjectId(id) };
-        //     const options = { upsert: true };
-        //     const updateDoc = {
-        //         $set: {
-        //             // _id: id,
-        //             // name: item.name,
-        //             // price: item.price,
-        //             // description: item.description,
-        //             quantity: item.quantity
-        //             // suppierName: item.suppierName,
-        //             // img: item.img
-        //         }
-        //     }
-        //     console.log(updateDoc, 'this is updated item');
-        //     const result = await itemCollection.updateOne(query, updateDoc, options);
-        //     res.send(result);
 
-        // })
+        app.put('/item/:id', async (req, res) => {
+            const id = req.params.id;
+            const property = req.body;
+            const query = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    quantity: property.newQuantity
+                }
+            }
+            const result = await itemCollection.updateOne(query, updateDoc, options);
+            res.send(result)
+
+        })
+
 
         //upload new data
         app.post('/item', async (req, res) => {
